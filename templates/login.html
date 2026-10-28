@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masuk - Workspace Kelompok1</title>
+    <style>
+        :root {
+            --primary: #F05333;
+            --primary-hover: #DE3717;
+            --primary-soft: #FDEEE9;
+            --ink: #241812;
+            --muted: #8C7D73;
+            --line: #EADDCF;
+            --field: #FDFBF8;
+            --bg-warm: #FAF3EC;
+            --dark-header: #171311;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+            background: radial-gradient(circle at 10% 20%, #291813 0%, #171311 50%, #0d0a09 100%);
+            color: var(--ink);
+        }
+
+        .window {
+            width: 100%;
+            max-width: 1180px;
+            background: #FDFBF8;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* ---------- Title bar ---------- */
+        .titlebar {
+            height: 54px;
+            padding: 0 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #171311;
+            color: #FAF3EC;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .titlebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .brand-mark {
+            width: 30px;
+            height: 30px;
+            display: grid;
+            place-items: center;
+            border-radius: 9px;
+            background: #27ae60;
+            color: #ffffff;
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+        }
+
+        .titlebar-brand strong {
+            display: block;
+            font-size: 13.5px;
+            line-height: 1.25;
+            letter-spacing: 0.01em;
+            color: #ffffff;
+        }
+
+        .titlebar-brand small {
+            display: block;
+            font-size: 10.5px;
+            color: #9a8b80;
+            line-height: 1.3;
+        }
+
+        .window-controls {
+            display: flex;
+            align-items: center;
+            gap: 26px;
+        }
+
+        .ctrl {
+            width: 14px;
+            height: 14px;
+            position: relative;
+            color: #9a8b80;
+        }
+
+        .ctrl-min::before {
+            content: "";
+            position: absolute;
+            top: 7px;
+            left: 0;
+            width: 14px;
+            height: 1.4px;
+            background: currentColor;
+        }
+
+        .ctrl-max::before {
+            content: "";
+            position: absolute;
+            inset: 2px;
+            border: 1.4px solid currentColor;
+            border-radius: 1px;
+        }
+
+        .ctrl-close::before,
+        .ctrl-close::after {
+            content: "";
+            position: absolute;
+            top: 6px;
+            left: -1px;
+            width: 16px;
+            height: 1.4px;
+            background: currentColor;
+        }
+
+        .ctrl-close::before {
+            transform: rotate(45deg);
+        }
+
+        .ctrl-close::after {
+            transform: rotate(-45deg);
+        }
+
+        /* ---------- Split layout ---------- */
+        .split {
+            display: grid;
+            grid-template-columns: 44% 1fr;
+            min-height: 690px;
+        }
+
+        /* ---------- Hero panel ---------- */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding: 38px 42px 32px;
+            display: flex;
+            flex-direction: column;
+            background: radial-gradient(120% 90% at 85% 15%, #462217 0%, #29150f 45%, #180d09 100%);
+            color: #ffffff;
+        }
+
+        .hero::before,
+        .hero::after {
+            content: "";
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero::before {
+            width: 560px;
+            height: 560px;
+            top: -190px;
+            right: -250px;
+            border: 1px solid rgba(240, 83, 51, 0.18);
+            box-shadow: inset 0 0 120px rgba(240, 83, 51, 0.08);
+        }
+
+        .hero::after {
+            width: 380px;
+            height: 380px;
+            top: 40px;
+            right: -170px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .hero-top {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .hero-logo {
+            width: 34px;
+            height: 34px;
+            border-radius: 9px;
+        }
+
+        .hero-top span {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            color: #f7ebe1;
+        }
+
+        .eyebrow {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 62px 0 18px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            color: #c9b4a7;
+        }
+
+        .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 0 4px rgba(240, 83, 51, 0.2);
+            flex: none;
+        }
+
+        .hero-title {
+            position: relative;
+            margin: 0 0 18px;
+            font-size: clamp(38px, 3.6vw, 52px);
+            line-height: 1.04;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+        }
+
+        .hero-title span {
+            color: #FF6B4A;
+        }
+
+        .hero-desc {
+            position: relative;
+            margin: 0;
+            max-width: 340px;
+            font-size: 14.5px;
+            line-height: 1.65;
+            color: #baa99e;
+        }
+
+        /* Overview card */
+        .overview {
+            position: relative;
+            margin-top: auto;
+            padding: 18px 20px 16px;
+            border-radius: 14px;
+            background: linear-gradient(160deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.03));
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            backdrop-filter: blur(6px);
+        }
+
+        .overview-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 13px;
+            font-weight: 600;
+            color: #dcece3;
+        }
+
+        .overview-head .dots {
+            letter-spacing: 2px;
+            color: #8fae9e;
+            font-size: 12px;
+        }
+
+        .overview-main {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .overview-label {
+            margin: 0 0 2px;
+            font-size: 11.5px;
+            color: #a6c2b4;
+        }
+
+        .overview-value {
+            margin: 0;
+            font-size: 38px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .ring {
+            position: relative;
+            width: 56px;
+            height: 56px;
+            flex: none;
+            border-radius: 50%;
+            background: conic-gradient(var(--primary) 0 72%, rgba(255, 255, 255, 0.12) 72% 100%);
+            display: grid;
+            place-items: center;
+        }
+
+        .ring::before {
+            content: "";
+            position: absolute;
+            inset: 5px;
+            border-radius: 50%;
+            background: #25140e;
+        }
+
+        .ring span {
+            position: relative;
+            font-size: 14px;
+            color: var(--primary);
+        }
+
+        .bar {
+            height: 5px;
+            margin-top: 18px;
+            border-radius: 99px;
+            background: rgba(255, 255, 255, 0.13);
+            overflow: hidden;
+        }
+
+        .bar i {
+            display: block;
+            width: 72%;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, #F05333, #FF8566);
+        }
+
+        .overview-foot {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin-top: 16px;
+        }
+
+        .avatars {
+            display: flex;
+        }
+
+        .avatars span {
+            width: 23px;
+            height: 23px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            border: 2px solid #14402f;
+            font-size: 9.5px;
+            font-weight: 700;
+            color: #23302a;
+        }
+
+        .avatars span + span {
+            margin-left: -5px;
+        }
+
+        .av-1 { background: #f4c7a1; }
+        .av-2 { background: #cdbdf5; }
+        .av-3 { background: #f5e6a8; }
+
+        .overview-note {
+            font-size: 10.5px;
+            color: #9db9ab;
+        }
+
+        .overview-foot .arrow {
+            margin-left: auto;
+            color: #a9c9b8;
+            font-size: 13px;
+        }
+
+        .hero-foot {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            margin: 26px 0 0;
+            font-size: 11px;
+            color: #9db9ab;
+        }
+
+        /* ---------- Form panel ---------- */
+        .panel {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 54px;
+            background: #FAF3EC;
+        }
+
+        .form-wrap {
+            width: 100%;
+            max-width: 384px;
+        }
+
+        .form-eyebrow {
+            margin: 0 0 12px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: #E63D1B;
+        }
+
+        .form-wrap h1 {
+            margin: 0 0 8px;
+            font-size: clamp(30px, 2.7vw, 38px);
+            line-height: 1.1;
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            color: #241812;
+        }
+
+        .form-sub {
+            margin: 0 0 26px;
+            font-size: 13.5px;
+            color: #6b5b50;
+        }
+
+        .form-error {
+            margin: 0 0 18px;
+            padding: 11px 14px;
+            border-radius: 10px;
+            border: 1px solid #f5c9c6;
+            background: #fff4f3;
+            color: #b3261e;
+            font-size: 12.5px;
+            line-height: 1.5;
+        }
+
+        .form-wrap label {
+            display: block;
+            margin-bottom: 7px;
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #3d2a1e;
+        }
+
+        .field {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .field svg {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 16px;
+            height: 16px;
+            color: #9a8b80;
+            pointer-events: none;
+        }
+
+        .field input {
+            width: 100%;
+            height: 50px;
+            padding: 0 46px;
+            border: 1px solid var(--line);
+            border-radius: 11px;
+            background: #FDFBF8;
+            font-family: inherit;
+            font-size: 13px;
+            color: #241812;
+            transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+        }
+
+        .field input::placeholder {
+            color: #a89a8f;
+        }
+
+        .field input:focus {
+            outline: none;
+            border-color: #F05333;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(240, 83, 51, 0.18);
+        }
+
+        .toggle {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border: none;
+            border-radius: 8px;
+            background: transparent;
+            color: #988a80;
+            font-size: 13px;
+            letter-spacing: 1px;
+            cursor: pointer;
+        }
+
+        .toggle:hover {
+            background: #f0e4d7;
+            color: #3d2a1e;
+        }
+
+        .form-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin: 2px 0 22px;
+        }
+
+        .checkbox {
+            display: inline-flex !important;
+            align-items: center;
+            gap: 8px;
+            margin: 0 !important;
+            font-size: 12.5px !important;
+            font-weight: 400 !important;
+            color: #5d4d42 !important;
+            cursor: pointer;
+        }
+
+        .checkbox input {
+            width: 15px;
+            height: 15px;
+            margin: 0;
+            accent-color: #F05333;
+            cursor: pointer;
+        }
+
+        .secure {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 11.5px;
+            color: #8c7d73;
+        }
+
+        .secure svg {
+            width: 12px;
+            height: 12px;
+            color: #F05333;
+        }
+
+        .submit {
+            width: 100%;
+            height: 52px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 0 20px;
+            border: none;
+            border-radius: 11px;
+            background: linear-gradient(135deg, #F05333 0%, #DE3717 100%);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(240, 83, 51, 0.32);
+            transition: transform 0.15s, box-shadow 0.15s, filter 0.15s;
+        }
+
+        .submit:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 14px 28px rgba(240, 83, 51, 0.42);
+        }
+
+        .submit:active {
+            transform: translateY(0);
+        }
+
+        .submit .arrow {
+            font-size: 17px;
+            line-height: 1;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 28px 0 20px;
+            color: #9a8b80;
+            font-size: 9.5px;
+            font-weight: 600;
+            letter-spacing: 0.16em;
+            white-space: nowrap;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #EADDCF;
+        }
+
+        .switch {
+            margin: 0;
+            text-align: center;
+            font-size: 12.5px;
+            color: #6b5b50;
+        }
+
+        .switch a {
+            color: #E63D1B;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .switch a:hover {
+            text-decoration: underline;
+        }
+
+        .footnote {
+            margin: 26px 0 0;
+            text-align: center;
+            font-size: 10.5px;
+            color: #a7b1ab;
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 960px) {
+            body {
+                padding: 16px;
+            }
+
+            .split {
+                grid-template-columns: 1fr;
+                min-height: 0;
+            }
+
+            .hero {
+                display: none;
+            }
+
+            .panel {
+                padding: 40px 28px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .window-controls {
+                gap: 18px;
+            }
+
+            .panel {
+                padding: 32px 20px;
+            }
+
+            .form-row {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="window">
+        <div class="titlebar">
+            <div class="titlebar-brand">
+                <span class="brand-mark">K1</span>
+                <div>
+                    <strong>Kelompok1</strong>
+                    <small>Workspace</small>
+                </div>
+            </div>
+            <div class="window-controls" aria-hidden="true">
+                <span class="ctrl ctrl-min"></span>
+                <span class="ctrl ctrl-max"></span>
+                <span class="ctrl ctrl-close"></span>
+            </div>
+        </div>
+
+        <div class="split">
+            <section class="hero">
+                <div class="hero-top">
+                    <span class="brand-mark hero-logo">K1</span>
+                    <span>KELOMPOK1</span>
+                </div>
+
+                <p class="eyebrow"><span class="dot"></span> YOUR TEAM WORKSPACE</p>
+
+                <h2 class="hero-title">Ide hebat,<br><span>jadi nyata.</span></h2>
+
+                <p class="hero-desc">Satukan tugas, proyek, dan kolaborasi tim dalam satu ruang kerja yang tertata.</p>
+
+                <div class="overview">
+                    <div class="overview-head">
+                        <span>Project overview</span>
+                        <span class="dots">•••</span>
+                    </div>
+
+                    <div class="overview-main">
+                        <div>
+                            <p class="overview-label">Task completion</p>
+                            <p class="overview-value">78%</p>
+                        </div>
+                        <div class="ring"><span>↗</span></div>
+                    </div>
+
+                    <div class="bar"><i></i></div>
+
+                    <div class="overview-foot">
+                        <div class="avatars">
+                            <span class="av-1">A</span>
+                            <span class="av-2">N</span>
+                            <span class="av-3">R</span>
+                        </div>
+                        <span class="overview-note">Team working together</span>
+                        <span class="arrow">↗</span>
+                    </div>
+                </div>
+
+                <p class="hero-foot"><span class="dot"></span> Rencanakan bersama. Selesaikan bersama.</p>
+            </section>
+
+            <section class="panel">
+                <div class="form-wrap">
+                    <p class="form-eyebrow">SELAMAT DATANG KEMBALI</p>
+                    <h1>Senang melihatmu!</h1>
+                    <p class="form-sub">Masuk untuk melanjutkan pekerjaanmu.</p>
+
+                    {{if .Error}}
+                    <div class="form-error" role="alert">{{.Error}}</div>
+                    {{end}}
+
+                    <form method="POST" action="/login">
+                        <label for="identifier">Email atau username</label>
+                        <div class="field">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="5" width="18" height="14" rx="2"></rect>
+                                <path d="m3 7 9 6 9-6"></path>
+                            </svg>
+                            <input id="identifier" type="text" name="identifier" placeholder="Masukkan email atau username" autocomplete="username" required>
+                        </div>
+
+                        <label for="password">Password</label>
+                        <div class="field">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="4" y="10" width="16" height="10" rx="2"></rect>
+                                <path d="M8 10V7a4 4 0 0 1 8 0v3"></path>
+                            </svg>
+                            <input id="password" type="password" name="password" placeholder="Masukkan password" autocomplete="current-password" required>
+                            <button type="button" class="toggle" id="togglePassword" aria-label="Tampilkan password" aria-pressed="false">•••</button>
+                        </div>
+
+                        <div class="form-row">
+                            <label class="checkbox" for="remember">
+                                <input id="remember" type="checkbox" name="remember" value="1">
+                                <span>Ingat saya</span>
+                            </label>
+                            <span class="secure">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="m4 12 5 5L20 6"></path>
+                                </svg>
+                                Koneksi aman
+                            </span>
+                        </div>
+
+                        <button type="submit" class="submit">
+                            <span>Masuk ke workspace</span>
+                            <span class="arrow" aria-hidden="true">→</span>
+                        </button>
+                    </form>
+
+                    <div class="divider"><span>RUANG KERJA TIM</span></div>
+
+                    <p class="switch">Belum punya akun? <a href="/register">Buat akun baru ↗</a></p>
+
+                    <p class="footnote">Dengan masuk, kamu melanjutkan ke workspace Kelompok1.</p>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <script>
+        var toggle = document.getElementById("togglePassword");
+        var password = document.getElementById("password");
+
+        toggle.addEventListener("click", function () {
+            var show = password.type === "password";
+            password.type = show ? "text" : "password";
+            toggle.setAttribute("aria-pressed", show ? "true" : "false");
+            toggle.setAttribute("aria-label", show ? "Sembunyikan password" : "Tampilkan password");
+            toggle.textContent = show ? "✕" : "•••";
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,916 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Dashboard - Workspace Kelompok1</title>
+    <script>
+        (function () {
+            try {
+                var mode = localStorage.getItem("todo-theme") || "system";
+                var dark = mode === "dark" || (mode !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+                var root = document.documentElement;
+                root.setAttribute("data-theme", dark ? "dark" : "light");
+                root.style.colorScheme = dark ? "dark" : "light";
+                if (localStorage.getItem("todo-sidebar") === "collapsed") {
+                    root.classList.add("sidebar-collapsed");
+                }
+            } catch (err) {}
+        })();
+    </script>
+    <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+        <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></g></symbol>
+        <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01" stroke-width="2.4"/></g></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></g></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.2-3.2"/></g></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></g></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-monitor" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></g></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m6 15 6-6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></g></symbol>
+        <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></g></symbol>
+        <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></g></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></g></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="m4 12 5 5L20 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-layers" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 9 5-9 5-9-5 9-5Z"/><path d="m3 12 9 5 9-5M3 17l9 5 9-5"/></g></symbol>
+        <symbol id="i-clock" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></g></symbol>
+        <symbol id="i-logout" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></g></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></g></symbol>
+    </svg>
+
+    <header class="topbar">
+        <button type="button" class="menu-btn" id="menuToggle" aria-label="Buka menu">
+            <svg width="18" height="18"><use href="#i-menu"/></svg>
+        </button>
+
+        <a class="brand" href="/" data-page="dashboard">
+            <span class="brand-mark window-app-icon">V</span>
+            <span class="brand-name">Kelompok 1</span>
+        </a>
+
+        <div class="top-search">
+            <svg width="15" height="15"><use href="#i-search"/></svg>
+            <input id="globalSearch" type="search" placeholder="Quick Search..." aria-label="Cari tugas" data-task-search>
+            <span class="kbd">⌘</span><span class="kbd">K</span>
+        </div>
+
+        <div class="top-actions">
+            <a class="top-icon nav-top-btn" href="/inbox" data-page="inbox" title="Inbox &amp; Notifikasi" aria-label="Inbox">
+                <svg width="17" height="17"><use href="#i-mail"/></svg>
+                {{if gt .UnreadInboxCount 0}}<span class="top-badge">{{.UnreadInboxCount}}</span>{{end}}
+            </a>
+            <a class="top-icon nav-top-btn" href="/documents" data-page="documents" title="Documents" aria-label="Documents">
+                <svg width="17" height="17"><use href="#i-doc"/></svg>
+            </a>
+            <a class="top-icon nav-top-btn" href="/team" data-page="team" title="Team Members" aria-label="Team Members">
+                <svg width="17" height="17"><use href="#i-users"/></svg>
+            </a>
+            <a class="top-icon nav-top-btn" href="/calendar" data-page="calendar" title="Calendar" aria-label="Calendar">
+                <svg width="17" height="17"><use href="#i-calendar"/></svg>
+            </a>
+            <button type="button" class="widget-btn open-invite-modal" aria-label="Invite Member" data-i18n="btn_invite_member">＋ Invite Member</button>
+            <select class="top-lang-select" id="headerLangSelect" data-lang-select aria-label="Language / Bahasa">
+                <option value="en">🇬🇧 EN</option>
+                <option value="id">🇮🇩 ID</option>
+                <option value="ru">🇷🇺 RU</option>
+                <option value="zh">🇨🇳 ZH</option>
+            </select>
+            <button type="button" class="top-icon theme-toggle" data-theme-toggle aria-label="Toggle theme" title="Toggle theme">
+                <svg class="icon-moon" width="17" height="17"><use href="#i-moon"/></svg>
+                <svg class="icon-sun" width="17" height="17"><use href="#i-sun"/></svg>
+            </button>
+            <a class="top-icon" href="/settings" aria-label="Settings" title="Settings">
+                <svg width="17" height="17"><use href="#i-settings"/></svg>
+            </a>
+            <a class="pill-btn" href="/todo/create">
+                <svg width="13" height="13"><use href="#i-plus"/></svg>
+                <span data-i18n="btn_new_task">+ New Task</span>
+            </a>
+            <div class="win-controls" aria-hidden="true">
+                <span class="wc wc-min"></span>
+                <span class="wc wc-max"></span>
+                <span class="wc wc-close"></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="scrim" id="sidebarScrim"></div>
+
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="workspace">
+                <div class="ws-avatar brand-mark user-avatar-container" id="sidebarAvatar">{{if .Avatar}}{{.Avatar}}{{else}}{{.Initial}}{{end}}</div>
+                <div class="ws-info">
+                    <strong>{{.Nama}}</strong>
+                    <small>{{.Email}}</small>
+                </div>
+                <button type="button" class="collapse-btn" id="sidebarCollapse" aria-label="Collapse sidebar" aria-expanded="true">
+                    <svg width="14" height="14"><use href="#i-chevron-left"/></svg>
+                </button>
+            </div>
+
+            <nav aria-label="Main menu">
+                <p class="nav-label" data-i18n="main_menu">MAIN MENU</p>
+                <a class="nav-item{{if or (eq .ActivePage "dashboard") (eq .ActivePage "")}} active{{end}}" href="/" data-page="dashboard">
+                    <svg><use href="#i-grid"/></svg>
+                    <span class="nav-text" data-i18n="nav_dashboard">Dashboard</span>
+                </a>
+                <a class="nav-item{{if eq .ActivePage "inbox"}} active{{end}}" href="/inbox" data-page="inbox">
+                    <svg><use href="#i-mail"/></svg>
+                    <span class="nav-text" data-i18n="nav_inbox">Inbox</span>
+                    <b class="nav-count{{if gt .UnreadInboxCount 0}} nav-count-alert{{end}}" id="inboxCount">{{.UnreadInboxCount}}</b>
+                </a>
+                <a class="nav-item{{if eq .ActivePage "team"}} active{{end}}" href="/team" data-page="team">
+                    <svg><use href="#i-users"/></svg>
+                    <span class="nav-text" data-i18n="nav_team">Team</span>
+                    <b class="nav-count" id="teamCount">{{.TeamCount}}</b>
+                </a>
+                <a class="nav-item" href="/#project-overview" data-page="dashboard">
+                    <svg><use href="#i-list"/></svg>
+                    <span class="nav-text" data-i18n="nav_my_tasks">My Tasks</span>
+                    <span class="nav-count">{{.TotalVisible}}</span>
+                </a>
+
+                <p class="nav-label" data-i18n="workspace_label">WORKSPACE</p>
+                <a class="nav-item{{if eq .ActivePage "documents"}} active{{end}}" href="/documents" data-page="documents">
+                    <svg><use href="#i-doc"/></svg>
+                    <span class="nav-text" data-i18n="nav_documents">Documents</span>
+                    {{if .Documents}}<span class="nav-count">{{len .Documents}}</span>{{end}}
+                </a>
+                <a class="nav-item{{if eq .ActivePage "calendar"}} active{{end}}" href="/calendar" data-page="calendar">
+                    <svg><use href="#i-calendar"/></svg>
+                    <span class="nav-text" data-i18n="nav_calendar">Calendar</span>
+                </a>
+
+                <p class="nav-label" data-i18n="project_status">PROJECT STATUS</p>
+                <a class="nav-item{{if eq .Filter "belum"}} active{{end}}" href="/?status=belum">
+                    <span class="dot dot-amber"></span>
+                    <span class="nav-text" data-i18n="status_pending">Waiting</span>
+                    <span class="nav-count">{{.CountPending}}</span>
+                </a>
+                <a class="nav-item{{if eq .Filter "sedang"}} active{{end}}" href="/?status=sedang">
+                    <span class="dot dot-purple"></span>
+                    <span class="nav-text" data-i18n="status_ongoing">In Progress</span>
+                    <span class="nav-count">{{.CountOngoing}}</span>
+                </a>
+                <a class="nav-item{{if eq .Filter "sudah"}} active{{end}}" href="/?status=sudah">
+                    <span class="dot dot-green"></span>
+                    <span class="nav-text" data-i18n="status_completed">Completed</span>
+                    <span class="nav-count">{{.CountDone}}</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-card upgrade-card">
+                <div class="upgrade-icon">✦</div>
+                <strong data-i18n="sidebar_collab_title">Collaborative Workspace</strong>
+                <p data-i18n="sidebar_collab_desc">Invite team members and wait for approval (acc) via inbox.</p>
+                <button type="button" class="widget-btn open-invite-modal" style="width:100%;margin-top:6px" data-i18n="btn_invite_member">＋ Invite Member</button>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="content-bar">
+                <div class="breadcrumb">
+                    <span class="crumb-arrows">‹　›</span>
+                    <a href="/" data-page="dashboard" data-i18n="main_menu_breadcrumb">Main Menu</a>
+                    <span>/</span>
+                    <strong id="breadcrumbTitle">{{if eq .ActivePage "inbox"}}Inbox{{else if eq .ActivePage "team"}}Team Members{{else if eq .ActivePage "documents"}}Documents{{else if eq .ActivePage "calendar"}}Calendar{{else}}Dashboard{{end}}</strong>
+                </div>
+                <div class="content-tools">
+                    <a class="icon-btn nav-top-btn" href="/inbox" data-page="inbox" title="Inbox &amp; Notifications" aria-label="Inbox" data-i18n-title="inbox_title">
+                        <svg width="15" height="15"><use href="#i-mail"/></svg>
+                        {{if gt .UnreadInboxCount 0}}<span class="badge-dot"></span>{{end}}
+                    </a>
+                    <a class="icon-btn nav-top-btn" href="/documents" data-page="documents" title="Documents" aria-label="Documents" data-i18n-title="docs_title">
+                        <svg width="15" height="15"><use href="#i-doc"/></svg>
+                    </a>
+                    <a class="icon-btn nav-top-btn" href="/team" data-page="team" title="Team Members" aria-label="Team Members" data-i18n-title="team_title">
+                        <svg width="15" height="15"><use href="#i-users"/></svg>
+                    </a>
+                    <a class="icon-btn nav-top-btn" href="/calendar" data-page="calendar" title="Calendar" aria-label="Calendar" data-i18n-title="cal_title">
+                        <svg width="15" height="15"><use href="#i-calendar"/></svg>
+                    </a>
+                    <button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Toggle theme">
+                        <svg class="icon-moon" width="15" height="15"><use href="#i-moon"/></svg>
+                        <svg class="icon-sun" width="15" height="15"><use href="#i-sun"/></svg>
+                    </button>
+                    <a class="icon-btn" href="/settings" aria-label="Settings" title="Settings" data-i18n-title="nav_settings">
+                        <svg width="15" height="15"><use href="#i-settings"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            {{if .FlashMessage}}
+            <div class="alert alert-success" role="alert">
+                <strong>✓ Success:</strong> {{.FlashMessage}}
+            </div>
+            {{end}}
+            {{if .FlashError}}
+            <div class="alert alert-danger" role="alert">
+                <strong>⚠️ Notice:</strong> {{.FlashError}}
+            </div>
+            {{end}}
+
+            <section class="page-view{{if or (eq .ActivePage "dashboard") (eq .ActivePage "")}} active{{end}}" id="page-dashboard">
+            <div class="page-head welcome-row">
+                <div class="page-title">
+                    <div class="ws-avatar user-avatar-container" style="width:44px;height:44px;border-radius:10px;font-size:16px;background:#27ae60;color:#fff;">{{if .Avatar}}{{.Avatar}}{{else}}V{{end}}</div>
+                    <div>
+                        <h1 data-i18n="welcome_title" data-name="{{.Nama}}">Hello {{.Nama}}, manage your projects.</h1>
+                        <p data-i18n="welcome_sub">Track, analyze, and organize tasks so team work is more focused.</p>
+                    </div>
+                </div>
+            </div>
+
+            {{if gt .OverdueCount 0}}
+            <div class="deadline-banner" role="alert" data-test="Peringatan Deadline:">
+                <div class="deadline-banner-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                        <line x1="12" y1="9" x2="12" y2="13"/>
+                        <line x1="12" y1="17" x2="12.01" y2="17"/>
+                    </svg>
+                </div>
+                <div class="deadline-banner-body">
+                    <strong data-i18n="deadline_warning_title" data-count="{{.OverdueCount}}">Deadline Warning: {{.OverdueCount}} tasks have passed their deadline!</strong>
+                    <p data-i18n="deadline_warning_desc">There are unfinished tasks that have exceeded their due date. Please check your tasks below.</p>
+                </div>
+            </div>
+            {{end}}
+
+            <section class="diagram-section" aria-label="Diagram Progres Tugas" data-test="Diagram Progres Tugas">
+                <div class="diagram-card">
+                    <div class="diagram-head">
+                        <div>
+                            <h3 data-i18n="diagram_title">Task Progress Diagram</h3>
+                            <p data-i18n="diagram_sub">Status distribution of all tasks in workspace</p>
+                        </div>
+                        <div class="diagram-chips">
+                            <span class="diagram-chip chip-total"><span class="val">{{.TotalVisible}}</span> <span data-i18n="total_tasks">Total Tasks</span></span>
+                        </div>
+                    </div>
+
+                    <div class="diagram-body">
+                        <!-- Donut Chart Ring -->
+                        <div class="diagram-chart-box">
+                            <div class="donut-chart" style="--done-pct: {{.DonePercent}}%; --ongoing-end-pct: {{.OngoingEndPercent}}%;{{if eq .TotalVisible 0}} background: var(--border-strong);{{end}}">
+                                <div class="donut-center">
+                                    <strong class="donut-value">{{.DonePercent}}%</strong>
+                                    <span class="donut-label" data-i18n="status_completed">Completed</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar & Percentage Legends -->
+                        <div class="diagram-details">
+                            <div class="progress-bar-container">
+                                <div class="multi-progress-bar" role="progressbar" aria-label="Task status percentage">
+                                    {{if gt .DonePercent 0}}
+                                    <div class="progress-segment seg-done" style="width: {{.DonePercent}}%;" title="Completed: {{.DonePercent}}%">
+                                        {{if gt .DonePercent 10}}<span class="seg-label">{{.DonePercent}}%</span>{{end}}
+                                    </div>
+                                    {{end}}
+                                    {{if gt .OngoingPercent 0}}
+                                    <div class="progress-segment seg-ongoing" style="width: {{.OngoingPercent}}%;" title="In Progress: {{.OngoingPercent}}%">
+                                        {{if gt .OngoingPercent 10}}<span class="seg-label">{{.OngoingPercent}}%</span>{{end}}
+                                    </div>
+                                    {{end}}
+                                    {{if gt .PendingPercent 0}}
+                                    <div class="progress-segment seg-pending" style="width: {{.PendingPercent}}%;" title="Not Yet Completed: {{.PendingPercent}}%">
+                                        {{if gt .PendingPercent 10}}<span class="seg-label">{{.PendingPercent}}%</span>{{end}}
+                                    </div>
+                                    {{end}}
+                                    {{if eq .TotalVisible 0}}
+                                    <div class="progress-segment seg-empty" style="width: 100%;">
+                                        <span class="seg-label" data-i18n="no_tasks_diagram">No tasks yet</span>
+                                    </div>
+                                    {{end}}
+                                </div>
+                            </div>
+
+                            <div class="diagram-legend-row">
+                                <div class="legend-item legend-done">
+                                    <div class="legend-marker"></div>
+                                    <div class="legend-info">
+                                        <div class="legend-header">
+                                            <strong data-i18n="status_completed">Completed</strong>
+                                            <span class="legend-pct">{{.DonePercent}}%</span>
+                                        </div>
+                                        <span class="legend-sub">{{.CountDone}} <span data-i18n="done_tasks">tasks completed</span></span>
+                                    </div>
+                                </div>
+
+                                <div class="legend-item legend-ongoing">
+                                    <div class="legend-marker"></div>
+                                    <div class="legend-info">
+                                        <div class="legend-header">
+                                            <strong data-i18n="status_ongoing">In Progress</strong>
+                                            <span class="legend-pct">{{.OngoingPercent}}%</span>
+                                        </div>
+                                        <span class="legend-sub">{{.CountOngoing}} <span data-i18n="ongoing_tasks">tasks in progress</span></span>
+                                    </div>
+                                </div>
+
+                                <div class="legend-item legend-pending">
+                                    <div class="legend-marker"></div>
+                                    <div class="legend-info">
+                                        <div class="legend-header">
+                                            <strong data-i18n="status_pending">Waiting</strong>
+                                            <span class="legend-pct">{{.PendingPercent}}%</span>
+                                        </div>
+                                        <span class="legend-sub">{{.CountPending}} <span data-i18n="pending_tasks">tasks not completed</span></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <div class="stats-grid">
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span data-i18n="stat_pending_title">WAITING</span>
+                        <span class="stat-icon tile-amber">
+                            <svg width="16" height="16"><use href="#i-layers"/></svg>
+                        </span>
+                    </div>
+                    <strong>{{.CountPending}}</strong>
+                    <p data-i18n="stat_pending_sub">Tasks waiting to start</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span data-i18n="stat_ongoing_title">ON PROGRESS</span>
+                        <span class="stat-icon tile-purple">
+                            <svg width="16" height="16"><use href="#i-layers"/></svg>
+                        </span>
+                    </div>
+                    <strong>{{.CountOngoing}}</strong>
+                    <p data-i18n="stat_ongoing_sub">Tasks in progress</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span data-i18n="stat_completed_title">COMPLETED</span>
+                        <span class="stat-icon tile-green">
+                            <svg width="16" height="16"><use href="#i-check"/></svg>
+                        </span>
+                    </div>
+                    <strong>{{.CountDone}}</strong>
+                    <p data-i18n="stat_done_sub" data-pct="{{.DonePercent}}">{{.DonePercent}}% of total tasks</p>
+                </article>
+
+                <article class="stat-card">
+                    <div class="stat-top">
+                        <span data-i18n="stat_deadline_title">UPCOMING DEADLINES</span>
+                        <span class="stat-icon tile-blue">
+                            <svg width="16" height="16"><use href="#i-clock"/></svg>
+                        </span>
+                    </div>
+                    <strong>{{.UpcomingDeadlines}}</strong>
+                    <p data-i18n="stat_deadline_sub">In the next 7 days</p>
+                </article>
+            </div>
+
+            <section class="overview" id="project-overview">
+                <div class="overview-head">
+                    <div>
+                        <h2 data-i18n="project_overview_title">Project Overview</h2>
+                        <p data-i18n="project_overview_sub">Track work at every stage.</p>
+                    </div>
+                    <div class="overview-tools">
+                        <div class="mini-search">
+                            <svg width="14" height="14"><use href="#i-search"/></svg>
+                            <input type="search" placeholder="Search tasks..." aria-label="Search tasks" data-i18n-placeholder="search_placeholder" data-task-search>
+                        </div>
+                        <select class="select" id="priorityFilter" aria-label="Filter priority">
+                            <option value="" data-i18n="filter_all">All Priorities</option>
+                            <option value="high" data-i18n="priority_high">High Priority</option>
+                            <option value="medium" data-i18n="priority_medium">Medium Priority</option>
+                            <option value="low" data-i18n="priority_low">Low Priority</option>
+                        </select>
+                        <a class="btn btn-primary" href="/todo/create" data-i18n="btn_new_task">+ New Task</a>
+                    </div>
+                </div>
+
+                {{if or (eq .Filter "") (eq .Filter "belum")}}
+                <section class="group">
+                    <div class="group-bar">
+                        <button type="button" class="group-toggle" aria-expanded="true">
+                            <span class="tag tag-todo">WAITING ({{.CountPending}})</span>
+                            <svg class="chev" width="13" height="13"><use href="#i-chevron"/></svg>
+                        </button>
+                        <a class="group-add" href="/todo/create" aria-label="Tambah tugas baru">+</a>
+                    </div>
+                    <div class="group-body">
+                        <div class="table-wrap">
+                            <table class="task-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="th_name">Task Name</th>
+                                        <th data-i18n="th_desc">Description</th>
+                                        <th data-i18n="th_deadline">Deadline</th>
+                                        <th data-i18n="th_team">Team</th>
+                                        <th data-i18n="th_priority">Priority</th>
+                                        <th data-i18n="th_actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{range .PendingTodos}}
+                                    <tr data-search="{{.Title}} {{.Description}}" data-priority="{{.PriorityClass}}">
+                                        <td class="cell-title">
+                                            <a href="/todo/detail?id={{.ID}}">{{.Title}}</a>
+                                            <small><span data-i18n="created_on">Created</span> {{.CreatedLabel}}</small>
+                                        </td>
+                                        <td class="cell-desc">{{if .Description}}{{.Description}}{{else}}—{{end}}</td>
+                                        <td class="cell-deadline">
+                                            <span class="deadline-text{{if .IsOverdue}} deadline-overdue{{end}}">{{.DeadlineLabel}}</span>
+                                            {{if .IsOverdue}}
+                                            <span class="tag-overdue" data-i18n="overdue_badge" data-test="⚠️ Terlewat" title="Overdue deadline">⚠️ Overdue</span>
+                                            {{end}}
+                                        </td>
+                                        <td class="cell-team">
+                                            {{if .Collaborators}}
+                                            <span class="mini-avatars">
+                                                {{range .CollaboratorInitials}}<span>{{.}}</span>{{end}}
+                                            </span>
+                                            <span class="team-count">{{len .Collaborators}} <span data-i18n="collaborators">collaborators</span></span>
+                                            {{else}}
+                                            <span class="team-count" style="margin-left:0" data-i18n="only_you">Only you</span>
+                                            {{end}}
+                                        </td>
+                                        <td><span class="priority priority-{{.PriorityClass}}" data-i18n="priority_{{.PriorityClass}}">{{.Priority}}</span></td>
+                                        <td class="cell-actions">
+                                            <a class="row-link" href="/todo/detail?id={{.ID}}" aria-label="Open detail {{.Title}}">
+                                                <svg width="13" height="13"><use href="#i-arrow"/></svg>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {{end}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="group-empty js-group-empty"{{if .PendingTodos}} hidden{{end}} data-i18n="group_empty">No tasks in this section yet.</p>
+                    </div>
+                </section>
+                {{end}}
+
+                {{if or (eq .Filter "") (eq .Filter "sedang")}}
+                <section class="group">
+                    <div class="group-bar">
+                        <button type="button" class="group-toggle" aria-expanded="true">
+                            <span class="tag tag-progress">ON PROGRESS ({{.CountOngoing}})</span>
+                            <svg class="chev" width="13" height="13"><use href="#i-chevron"/></svg>
+                        </button>
+                        <a class="group-add" href="/todo/create" aria-label="Tambah tugas baru">+</a>
+                    </div>
+                    <div class="group-body">
+                        <div class="table-wrap">
+                            <table class="task-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="th_name">Task Name</th>
+                                        <th data-i18n="th_desc">Description</th>
+                                        <th data-i18n="th_deadline">Deadline</th>
+                                        <th data-i18n="th_team">Team</th>
+                                        <th data-i18n="th_priority">Priority</th>
+                                        <th data-i18n="th_actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{range .OngoingTodos}}
+                                    <tr data-search="{{.Title}} {{.Description}}" data-priority="{{.PriorityClass}}">
+                                        <td class="cell-title">
+                                            <a href="/todo/detail?id={{.ID}}">{{.Title}}</a>
+                                            <small><span data-i18n="created_on">Created</span> {{.CreatedLabel}}</small>
+                                        </td>
+                                        <td class="cell-desc">{{if .Description}}{{.Description}}{{else}}—{{end}}</td>
+                                        <td class="cell-deadline">
+                                            <span class="deadline-text{{if .IsOverdue}} deadline-overdue{{end}}">{{.DeadlineLabel}}</span>
+                                            {{if .IsOverdue}}
+                                            <span class="tag-overdue" data-i18n="overdue_badge" data-test="⚠️ Terlewat" title="Overdue deadline">⚠️ Overdue</span>
+                                            {{end}}
+                                        </td>
+                                        <td class="cell-team">
+                                            {{if .Collaborators}}
+                                            <span class="mini-avatars">
+                                                {{range .CollaboratorInitials}}<span>{{.}}</span>{{end}}
+                                            </span>
+                                            <span class="team-count">{{len .Collaborators}} <span data-i18n="collaborators">collaborators</span></span>
+                                            {{else}}
+                                            <span class="team-count" style="margin-left:0" data-i18n="only_you">Only you</span>
+                                            {{end}}
+                                        </td>
+                                        <td><span class="priority priority-{{.PriorityClass}}" data-i18n="priority_{{.PriorityClass}}">{{.Priority}}</span></td>
+                                        <td class="cell-actions">
+                                            <a class="row-link" href="/todo/detail?id={{.ID}}" aria-label="Open detail {{.Title}}">
+                                                <svg width="13" height="13"><use href="#i-arrow"/></svg>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {{end}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="group-empty js-group-empty"{{if .OngoingTodos}} hidden{{end}} data-i18n="group_empty">No tasks in this section yet.</p>
+                    </div>
+                </section>
+                {{end}}
+
+                {{if or (eq .Filter "") (eq .Filter "sudah")}}
+                <section class="group">
+                    <div class="group-bar">
+                        <button type="button" class="group-toggle" aria-expanded="true">
+                            <span class="tag tag-done">COMPLETED ({{.CountDone}})</span>
+                            <svg class="chev" width="13" height="13"><use href="#i-chevron"/></svg>
+                        </button>
+                        <a class="group-add" href="/todo/create" aria-label="Tambah tugas baru">+</a>
+                    </div>
+                    <div class="group-body">
+                        <div class="table-wrap">
+                            <table class="task-table">
+                                <thead>
+                                    <tr>
+                                        <th data-i18n="th_name">Task Name</th>
+                                        <th data-i18n="th_desc">Description</th>
+                                        <th data-i18n="th_deadline">Deadline</th>
+                                        <th data-i18n="th_team">Team</th>
+                                        <th data-i18n="th_priority">Priority</th>
+                                        <th data-i18n="th_actions">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{range .DoneTodos}}
+                                    <tr data-search="{{.Title}} {{.Description}}" data-priority="{{.PriorityClass}}">
+                                        <td class="cell-title">
+                                            <a href="/todo/detail?id={{.ID}}">{{.Title}}</a>
+                                            <small><span data-i18n="created_on">Created</span> {{.CreatedLabel}}</small>
+                                        </td>
+                                        <td class="cell-desc">{{if .Description}}{{.Description}}{{else}}—{{end}}</td>
+                                        <td class="cell-deadline">{{.DeadlineLabel}}</td>
+                                        <td class="cell-team">
+                                            {{if .Collaborators}}
+                                            <span class="mini-avatars">
+                                                {{range .CollaboratorInitials}}<span>{{.}}</span>{{end}}
+                                            </span>
+                                            <span class="team-count">{{len .Collaborators}} <span data-i18n="collaborators">collaborators</span></span>
+                                            {{else}}
+                                            <span class="team-count" style="margin-left:0" data-i18n="only_you">Only you</span>
+                                            {{end}}
+                                        </td>
+                                        <td><span class="priority priority-{{.PriorityClass}}" data-i18n="priority_{{.PriorityClass}}">{{.Priority}}</span></td>
+                                        <td class="cell-actions">
+                                            <a class="row-link" href="/todo/detail?id={{.ID}}" aria-label="Open detail {{.Title}}">
+                                                <svg width="13" height="13"><use href="#i-arrow"/></svg>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    {{end}}
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="group-empty js-group-empty"{{if .DoneTodos}} hidden{{end}} data-i18n="group_empty">No tasks in this section yet.</p>
+                    </div>
+                </section>
+                {{end}}
+
+                {{if .Filter}}
+                <p class="group-empty" style="padding-bottom:14px">
+                    <span data-i18n="filter_showing">Currently showing status filter</span> <strong>{{.Filter}}</strong>. <a href="/" data-i18n="filter_show_all">Show all tasks</a>.
+                </p>
+                {{end}}
+            </section>
+            </section>
+
+            <!-- PAGE: INBOX -->
+            <section class="page-view{{if eq .ActivePage "inbox"}} active{{end}}" id="page-inbox">
+                <div class="page-heading">
+                    <div>
+                        <span class="eyebrow" data-i18n="inbox_comm">COMMUNICATION</span>
+                        <h1 data-i18n="inbox_title">Inbox &amp; Notifications</h1>
+                        <p class="muted" data-i18n="inbox_sub">Workspace collaboration invitations and message notifications.</p>
+                    </div>
+                    <div class="page-heading-actions">
+                        <form method="POST" action="/inbox/read-all" style="margin:0;">
+                            <button type="submit" class="secondary-btn" id="markAllRead" data-i18n="btn_mark_all_read">Mark all as read</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="inbox-list" id="inboxList">
+                    {{range .InboxMessages}}
+                    <article class="inbox-item{{if not .IsRead}} unread{{end}}">
+                        <div class="message-avatar{{if eq .Type "accepted"}} green{{else if eq .Type "rejected"}} peach{{else if eq .Type "invite"}} violet{{end}}">
+                            {{if .Sender}}{{slice .Sender 0 2}}{{else}}IN{{end}}
+                        </div>
+                        <div class="inbox-body">
+                            <div class="inbox-header-row">
+                                <strong>{{.Sender}}</strong>
+                                <small class="inbox-time">{{.CreatedAt}}</small>
+                            </div>
+                            <p class="inbox-text">{{.Message}}</p>
+                            
+                            {{if eq .Type "invite"}}
+                            <div class="inbox-actions">
+                                <span class="status-pill status-pending" data-i18n="invite_pending_acc">Waiting for Acceptance (Pending ACC)</span>
+                                <div class="action-buttons-row">
+                                    <form method="POST" action="/invitation/respond" style="display:inline;margin:0;">
+                                        <input type="hidden" name="invite_id" value="{{.InviteID}}">
+                                        <input type="hidden" name="action" value="accept">
+                                        <button type="submit" class="primary-btn btn-acc" data-i18n="btn_acc">✓ Accept (ACC)</button>
+                                    </form>
+                                    <form method="POST" action="/invitation/respond" style="display:inline;margin:0;">
+                                        <input type="hidden" name="invite_id" value="{{.InviteID}}">
+                                        <input type="hidden" name="action" value="reject">
+                                        <button type="submit" class="secondary-btn btn-reject" data-i18n="btn_reject">✕ Reject</button>
+                                    </form>
+                                </div>
+                            </div>
+                            {{else if eq .Type "accepted"}}
+                            <div class="inbox-actions">
+                                <span class="status-pill status-accepted" data-i18n="invite_accepted">✓ Invitation Accepted (ACC'd)</span>
+                                {{if .TodoID}}
+                                <a class="small-btn" href="/todo/detail?id={{.TodoID}}" data-i18n="btn_view_task">View Task →</a>
+                                {{end}}
+                            </div>
+                            {{else if eq .Type "rejected"}}
+                            <div class="inbox-actions">
+                                <span class="status-pill status-rejected" data-i18n="invite_rejected">✕ Invitation Rejected</span>
+                            </div>
+                            {{end}}
+                        </div>
+                        {{if not .IsRead}}<span class="unread-dot"></span>{{end}}
+                    </article>
+                    {{else}}
+                    <div class="inbox-empty">
+                        <div class="empty-icon">✉</div>
+                        <h3 data-i18n="inbox_empty_title">Inbox is Empty</h3>
+                        <p class="muted" data-i18n="inbox_empty_sub">No incoming messages or invitations yet.</p>
+                    </div>
+                    {{end}}
+                </div>
+            </section>
+
+            <!-- PAGE: TEAM -->
+            <section class="page-view{{if eq .ActivePage "team"}} active{{end}}" id="page-team">
+                <div class="page-heading">
+                    <div>
+                        <span class="eyebrow" data-i18n="workspace_label">WORKSPACE</span>
+                        <h1 data-i18n="team_title">Team Members</h1>
+                        <p class="muted" data-i18n="team_sub">People collaborating on workspace tasks and projects.</p>
+                    </div>
+                    <button type="button" class="primary-btn open-invite-modal" data-i18n="btn_invite_member">＋ Invite Member</button>
+                </div>
+
+                <div class="team-grid" id="teamGrid">
+                    {{range .TeamMembers}}
+                    <article class="member-card">
+                        <div class="member-avatar user-avatar-container">{{.Initial}}</div>
+                        <div class="member-info">
+                            <strong>{{.Nama}}</strong>
+                            <small>{{.Email}}</small>
+                            <span class="role-pill role-{{.Status}} {{if eq .Role "Admin"}}role-admin{{else if or (eq .Role "Member") (eq .Role "Member (Pending)")}}role-member{{end}}">{{.Role}}</span>
+                            {{if .Projects}}
+                            <div class="member-projects">
+                                <small class="project-tag-caption" data-i18n="th_name">Tasks:</small>
+                                <div class="project-tags">
+                                    {{range .Projects}}<span class="project-tag">{{.}}</span>{{end}}
+                                </div>
+                            </div>
+                            {{end}}
+                        </div>
+                    </article>
+                    {{else}}
+                    <div class="inbox-empty" style="grid-column: 1 / -1;">
+                        <div class="empty-icon">👥</div>
+                        <h3 data-i18n="team_empty_title">No Team Members Yet</h3>
+                        <p class="muted" data-i18n="team_empty_sub">Click '+ Invite Member' to invite collaborators to your tasks.</p>
+                    </div>
+                    {{end}}
+                </div>
+            </section>
+
+            <!-- PAGE: DOCUMENTS -->
+            <section class="page-view{{if eq .ActivePage "documents"}} active{{end}}" id="page-documents">
+                <div class="page-heading">
+                    <div>
+                        <span class="eyebrow" data-i18n="workspace_label">WORKSPACE</span>
+                        <h1 data-i18n="docs_title">Documents</h1>
+                        <p class="muted" data-i18n="docs_sub">Reference files and documents attached to your tasks.</p>
+                    </div>
+                    <button type="button" class="primary-btn open-doc-modal" data-i18n="btn_attach_doc">＋ Attach Document</button>
+                </div>
+
+                {{if .Documents}}
+                <div class="document-grid" id="documentGrid">
+                    {{range .Documents}}
+                    <article class="document-card">
+                        <div class="document-icon {{.TypeClass}}">{{.Ext}}</div>
+                        <div class="document-info">
+                            <strong>{{.FileName}}</strong>
+                            <p><a href="/todo/detail?id={{.TodoID}}" class="doc-todo-link">{{.TodoTitle}}</a></p>
+                            <small class="muted">{{.Date}}</small>
+                        </div>
+                        <a class="secondary-btn small-btn" href="/todo/detail?id={{.TodoID}}" data-i18n="btn_view_task">Open Task →</a>
+                    </article>
+                    {{end}}
+                </div>
+                {{else}}
+                <div class="inbox-empty" style="grid-column: 1 / -1;">
+                    <div class="empty-icon">▤</div>
+                    <h3 data-i18n="docs_empty_title">No Documents Yet</h3>
+                    <p class="muted" data-i18n="docs_empty_sub">Documents only appear if a task has an attached document. If none, this section remains empty.</p>
+                    <button type="button" class="primary-btn open-doc-modal" style="margin-top:12px;" data-i18n="btn_attach_doc">＋ Attach Document</button>
+                </div>
+                {{end}}
+            </section>
+
+            <!-- PAGE: CALENDAR -->
+            <section class="page-view{{if eq .ActivePage "calendar"}} active{{end}}" id="page-calendar">
+                <div class="page-heading">
+                    <div>
+                        <span class="eyebrow" data-i18n="workspace_label">WORKSPACE · CALENDAR</span>
+                        <h1 data-i18n="cal_title">Calendar &amp; Schedule</h1>
+                    </div>
+                    <div class="calendar-top-actions">
+                        <button type="button" class="secondary-btn" id="todayMonth" data-i18n="btn_today">Today</button>
+                    </div>
+                </div>
+
+                <!-- Banner Jam (WIB) Real-time -->
+                <div class="indo-clock-banner">
+                    <div class="indo-clock-left">
+                        <span class="indo-flag">⏰</span>
+                        <div>
+                            <div class="indo-clock-sub" data-i18n="cal_time_label">CURRENT TIME (WIB):</div>
+                            <div class="indo-clock-time" id="liveIndoTime">Loading time...</div>
+                        </div>
+                    </div>
+                    <div class="indo-clock-right">
+                        <span class="indo-time-badge" data-i18n="badge_timezone">Timezone: WIB (UTC+7 / Asia/Jakarta)</span>
+                    </div>
+                </div>
+
+                <!-- Kontrol Navigasi Bulan & Tahun -->
+                <div class="calendar-controls-bar">
+                    <div class="cal-nav-group">
+                        <button type="button" class="secondary-btn icon-btn" id="prevMonth" title="Previous Month">‹</button>
+                        
+                        <div class="cal-dropdowns">
+                            <label class="sr-only" for="calMonthSelect" data-i18n="cal_select_month">Select Month</label>
+                            <select id="calMonthSelect" class="cal-select cal-select-month">
+                                <option value="0">January</option>
+                                <option value="1">February</option>
+                                <option value="2">March</option>
+                                <option value="3">April</option>
+                                <option value="4">May</option>
+                                <option value="5">June</option>
+                                <option value="6">July</option>
+                                <option value="7">August</option>
+                                <option value="8">September</option>
+                                <option value="9">October</option>
+                                <option value="10">November</option>
+                                <option value="11">December</option>
+                            </select>
+
+                            <label class="sr-only" for="calYearSelect" data-i18n="cal_select_year">Select Year</label>
+                            <select id="calYearSelect" class="cal-select cal-select-year">
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                                <option value="2028">2028</option>
+                                <option value="2029">2029</option>
+                                <option value="2030">2030</option>
+                            </select>
+                        </div>
+
+                        <button type="button" class="secondary-btn icon-btn" id="nextMonth" title="Next Month">›</button>
+                    </div>
+
+                    <div class="cal-month-title-display">
+                        <h2 id="calendarMonthTitle">October 2026</h2>
+                    </div>
+                </div>
+
+                <div class="calendar-legend">
+                    <span class="legend-holiday"><i class="dot dot-red"></i><span data-i18n="legend_holiday">Sunday / Red Date</span></span>
+                    <span><i class="dot dot-amber"></i><span data-i18n="status_pending">Waiting</span></span>
+                    <span><i class="dot dot-purple"></i><span data-i18n="status_ongoing">In Progress</span></span>
+                    <span><i class="dot dot-green"></i><span data-i18n="status_completed">Completed</span></span>
+                    <span class="legend-note" data-i18n="legend_note">⏱ Task Time: 24-Hour Format (WIB)</span>
+                </div>
+
+                <!-- Tampilan Bentuk Kalender -->
+                <div class="calendar-wrapper">
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+
+                <!-- Panel Detail Hari Terpilih -->
+                <div class="calendar-day-detail-card" id="calDayDetailCard" style="display:none;">
+                    <div class="day-detail-header">
+                        <div>
+                            <span class="eyebrow" id="dayDetailEyebrow" data-i18n="cal_day_agenda">DAILY AGENDA</span>
+                            <h3 id="dayDetailTitle"></h3>
+                            <p class="muted" id="dayDetailSub" data-i18n="cal_day_sub">List of tasks scheduled on this date (WIB).</p>
+                        </div>
+                        <div class="day-detail-actions">
+                            <button type="button" class="secondary-btn small-btn" id="closeDayDetailBtn" data-i18n="btn_close">Close</button>
+                        </div>
+                    </div>
+                    <div class="day-detail-list" id="dayDetailList"></div>
+                </div>
+            </section>
+
+            <!-- MODAL: INVITE MEMBER -->
+            <div class="modal-backdrop" id="inviteModal" hidden>
+                <div class="modal-dialog">
+                    <div class="modal-header">
+                        <div class="welcome-mark">♧</div>
+                        <div>
+                            <h2 data-i18n="modal_invite_title">Invite team member</h2>
+                            <p class="muted" data-i18n="modal_invite_sub">Invite colleagues to collaborate on Group 1 workspace tasks.</p>
+                        </div>
+                        <button type="button" class="modal-close" id="closeInviteModalBtn" aria-label="Close">×</button>
+                    </div>
+                    <form method="POST" action="/invitation/send" class="app-form">
+                        <input type="hidden" name="from_page" value="team">
+                        <label>
+                            <span data-i18n="modal_invite_choose_task">Choose Task / Project</span>
+                            <select name="todo_id" required>
+                                <option value="" data-i18n="modal_invite_select_placeholder">-- Select Task for Collaboration --</option>
+                                {{range .UserTodosSimple}}
+                                <option value="{{.ID}}">{{.Title}}</option>
+                                {{end}}
+                            </select>
+                        </label>
+                        <label>
+                            <span data-i18n="modal_invite_user">User Email or Username</span>
+                            <input type="text" name="invitee" required placeholder="name@example.com or registered username" data-i18n-placeholder="modal_invite_user_ph">
+                        </label>
+                        <div class="form-note-box">
+                            ℹ️ <strong data-i18n="modal_invite_flow_note">Collaboration Flow: Invitations will arrive in your colleague's Inbox. They must click Accept (ACC) before accessing the task.</strong>
+                        </div>
+                        <div class="form-actions">
+                            <button type="button" class="secondary-btn" id="cancelInviteModalBtn" data-i18n="btn_cancel">Cancel</button>
+                            <button type="submit" class="primary-btn" data-i18n="btn_send_invite">＋ Send Invitation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- MODAL: ATTACH DOCUMENT -->
+            <div class="modal-backdrop" id="docModal" hidden>
+                <div class="modal-dialog">
+                    <div class="modal-header">
+                        <div class="welcome-mark">▤</div>
+                        <div>
+                            <h2 data-i18n="modal_doc_title">Attach Document to Task</h2>
+                            <p class="muted" data-i18n="modal_doc_sub">Select a task and attach a document.</p>
+                        </div>
+                        <button type="button" class="modal-close" id="closeDocModalBtn" aria-label="Close">×</button>
+                    </div>
+                    <form method="POST" action="/todo/attach-document" enctype="multipart/form-data" class="app-form">
+                        <input type="hidden" name="from_page" value="documents">
+                        <label>
+                            <span data-i18n="modal_doc_choose_task">Choose Task / Project</span>
+                            <select name="todo_id" required>
+                                <option value="" data-i18n="modal_doc_select_ph">-- Select Task --</option>
+                                {{range .UserTodosSimple}}
+                                <option value="{{.ID}}">{{.Title}}</option>
+                                {{end}}
+                            </select>
+                        </label>
+                        <label>
+                            <span data-i18n="modal_doc_name">Document Name</span>
+                            <input type="text" name="document" placeholder="e.g., Project_Brief.pdf, Report.docx" data-i18n-placeholder="modal_doc_name_ph">
+                        </label>
+                        <label>
+                            <span data-i18n="modal_doc_or_upload">Or Upload File</span>
+                            <input type="file" name="document_file">
+                        </label>
+                        <div class="form-actions">
+                            <button type="button" class="secondary-btn" id="cancelDocModalBtn" data-i18n="btn_cancel">Cancel</button>
+                            <button type="submit" class="primary-btn" data-i18n="btn_save_doc">Save Document</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script type="application/json" id="calendarEventsJson">{{if .CalendarEventsJSON}}{{.CalendarEventsJSON}}{{else}}[]{{end}}</script>
+    <script>
+        window.calendarEventsData = {{if .CalendarEventsJSON}}{{.CalendarEventsJSON}}{{else}}"[]"{{end}};
+    </script>
+    <script src="/static/app.js"></script>
+</body>
+</html>

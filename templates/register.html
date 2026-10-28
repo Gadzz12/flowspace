@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - Workspace Kelompok 1</title>
+    <style>
+        :root {
+            --primary: #F05333;
+            --primary-hover: #DE3717;
+            --ink: #241812;
+            --muted: #8C7D73;
+            --line: #EADDCF;
+            --field: #FDFBF8;
+            --bg-warm: #FAF3EC;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            padding: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+            background: radial-gradient(circle at 10% 20%, #291813 0%, #171311 50%, #0d0a09 100%);
+            color: var(--ink);
+        }
+
+        .window {
+            width: 100%;
+            max-width: 480px;
+            background: #FDFBF8;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .titlebar {
+            height: 52px;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #171311;
+            color: #FAF3EC;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .titlebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .brand-mark {
+            width: 28px;
+            height: 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            background: #27ae60;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .titlebar-brand strong {
+            font-size: 13px;
+            color: #ffffff;
+        }
+
+        .window-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #9a8b80;
+        }
+
+        .wc {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #443730;
+        }
+
+        .panel {
+            padding: 38px 36px 34px;
+            background: #FAF3EC;
+        }
+
+        .form-eyebrow {
+            margin: 0 0 10px;
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            color: #E63D1B;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            color: #241812;
+        }
+
+        p.sub {
+            margin: 0 0 24px;
+            font-size: 13px;
+            color: #6b5b50;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #3d2a1e;
+        }
+
+        input {
+            width: 100%;
+            height: 46px;
+            padding: 0 14px;
+            margin-bottom: 14px;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: #FDFBF8;
+            font-family: inherit;
+            font-size: 13px;
+            color: #241812;
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #F05333;
+            background: #ffffff;
+            box-shadow: 0 0 0 3px rgba(240, 83, 51, 0.18);
+        }
+
+        button.submit {
+            width: 100%;
+            height: 48px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #F05333 0%, #DE3717 100%);
+            color: #ffffff;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 10px 24px rgba(240, 83, 51, 0.32);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+
+        button.submit:hover {
+            filter: brightness(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 14px 28px rgba(240, 83, 51, 0.42);
+        }
+
+        .switch {
+            margin: 22px 0 0;
+            text-align: center;
+            font-size: 12.5px;
+            color: #6b5b50;
+        }
+
+        .switch a {
+            color: #E63D1B;
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .switch a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="window">
+        <div class="titlebar">
+            <div class="titlebar-brand">
+                <span class="brand-mark">K1</span>
+                <strong>Kelompok 1</strong>
+            </div>
+            <div class="window-controls">
+                <span class="wc"></span>
+                <span class="wc"></span>
+                <span class="wc"></span>
+            </div>
+        </div>
+        <div class="panel">
+            <div class="form-eyebrow">WORKSPACE REGISTRATION</div>
+            <h1>Buat Akun Baru</h1>
+            <p class="sub">Daftarkan akun untuk mulai berkolaborasi pada proyek tim.</p>
+
+            <form method="POST" action="/register">
+                <label>Nama Lengkap</label>
+                <input type="text" name="nama" placeholder="Contoh: Muhammad Yusril" required>
+
+                <label>Username</label>
+                <input type="text" name="username" placeholder="username_kamu" required>
+
+                <label>Email</label>
+                <input type="email" name="email" placeholder="nama@example.com" required>
+
+                <label>Password</label>
+                <input type="password" name="password" placeholder="••••••••" required>
+
+                <button type="submit" class="submit">Daftar Akun Baru →</button>
+            </form>
+
+            <p class="switch">Sudah punya akun? <a href="/login">Masuk di sini</a></p>
+        </div>
+    </div>
+</body>
+</html>

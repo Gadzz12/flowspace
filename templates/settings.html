@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Pengaturan - Workspace Kelompok1</title>
+    <script>
+        (function () {
+            try {
+                var mode = localStorage.getItem("todo-theme") || "system";
+                var dark = mode === "dark" || (mode !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+                var root = document.documentElement;
+                root.setAttribute("data-theme", dark ? "dark" : "light");
+                root.style.colorScheme = dark ? "dark" : "light";
+                if (localStorage.getItem("todo-sidebar") === "collapsed") {
+                    root.classList.add("sidebar-collapsed");
+                }
+            } catch (err) {}
+        })();
+    </script>
+    <link rel="stylesheet" href="/static/app.css">
+</head>
+<body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+        <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></g></symbol>
+        <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01" stroke-width="2.4"/></g></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></g></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></g></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-monitor" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></g></symbol>
+        <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></g></symbol>
+        <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></g></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></g></symbol>
+        <symbol id="i-logout" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></g></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-arrow" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></g></symbol>
+    </svg>
+
+    <header class="topbar">
+        <button type="button" class="menu-btn" id="menuToggle" aria-label="Buka menu">
+            <svg width="18" height="18"><use href="#i-menu"/></svg>
+        </button>
+
+        <a class="brand" href="/">
+            <span class="brand-mark">K1</span>
+            <span class="brand-name">Kelompok 1</span>
+        </a>
+
+        <div class="top-actions">
+            <button type="button" class="top-icon theme-toggle" data-theme-toggle aria-label="Ubah tema">
+                <svg class="icon-moon" width="17" height="17"><use href="#i-moon"/></svg>
+                <svg class="icon-sun" width="17" height="17"><use href="#i-sun"/></svg>
+            </button>
+            <a class="top-icon" href="/" aria-label="Kembali ke dashboard" title="Dashboard">
+                <svg width="17" height="17"><use href="#i-grid"/></svg>
+            </a>
+            <a class="pill-btn" href="/todo/create">
+                <svg width="13" height="13"><use href="#i-plus"/></svg>
+                <span data-i18n="btn_new_task">+ New Task</span>
+            </a>
+            <div class="win-controls" aria-hidden="true">
+                <span class="wc wc-min"></span>
+                <span class="wc wc-max"></span>
+                <span class="wc wc-close"></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="scrim" id="sidebarScrim"></div>
+
+    <div class="shell">
+        <aside class="sidebar">
+            <div class="workspace">
+                <div class="ws-avatar user-avatar-container">{{if .Avatar}}{{.Avatar}}{{else}}{{.Initial}}{{end}}</div>
+                <div class="ws-info">
+                    <strong>{{.Nama}}</strong>
+                    <small>{{.Email}}</small>
+                </div>
+                <button type="button" class="collapse-btn" id="sidebarCollapse" aria-label="Ciutkan sidebar" aria-expanded="true">
+                    <svg width="14" height="14"><use href="#i-chevron-left"/></svg>
+                </button>
+            </div>
+
+            <nav aria-label="Menu utama">
+                <p class="nav-label" data-i18n="main_menu">MAIN MENU</p>
+                <a class="nav-item" href="/">
+                    <svg><use href="#i-grid"/></svg>
+                    <span class="nav-text" data-i18n="nav_dashboard">Dashboard</span>
+                </a>
+                <a class="nav-item" href="/#project-overview">
+                    <svg><use href="#i-list"/></svg>
+                    <span class="nav-text" data-i18n="nav_my_tasks">My Tasks</span>
+                    <span class="nav-count">{{.TotalVisible}}</span>
+                </a>
+
+                <p class="nav-label" data-i18n="workspace_label">WORKSPACE</p>
+                <a class="nav-item" href="/settings#tampilan">
+                    <svg><use href="#i-doc"/></svg>
+                    <span class="nav-text" data-i18n="card_appearance">Appearance</span>
+                </a>
+                <a class="nav-item" href="/settings#akun">
+                    <svg><use href="#i-calendar"/></svg>
+                    <span class="nav-text" data-i18n="card_security">Account &amp; Session</span>
+                </a>
+
+                <p class="nav-label" data-i18n="project_status">PROJECT STATUS</p>
+                <a class="nav-item" href="/?status=belum">
+                    <span class="dot dot-amber"></span>
+                    <span class="nav-text" data-i18n="status_pending">Waiting</span>
+                    <span class="nav-count">{{.CountPending}}</span>
+                </a>
+                <a class="nav-item" href="/?status=sedang">
+                    <span class="dot dot-purple"></span>
+                    <span class="nav-text" data-i18n="status_ongoing">In Progress</span>
+                    <span class="nav-count">{{.CountOngoing}}</span>
+                </a>
+                <a class="nav-item" href="/?status=sudah">
+                    <span class="dot dot-green"></span>
+                    <span class="nav-text" data-i18n="status_completed">Completed</span>
+                    <span class="nav-count">{{.CountDone}}</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-card">
+                <div class="sidebar-card-icon">
+                    <svg width="16" height="16"><use href="#i-plus"/></svg>
+                </div>
+                <strong data-i18n="sidebar_collab_title">Collaborative Workspace</strong>
+                <p data-i18n="sidebar_collab_desc">Organize work and collaborate seamlessly with team members.</p>
+                <a class="btn btn-dark btn-block" href="/todo/create" data-i18n="btn_new_task">+ New Task</a>
+            </div>
+        </aside>
+
+        <main class="content">
+            <div class="content-bar">
+                <div class="breadcrumb">
+                    <a class="back" href="/" aria-label="Kembali">
+                        <svg width="12" height="12"><use href="#i-chevron-left"/></svg>
+                    </a>
+                    <a href="/">Main Menu</a>
+                    <span>/</span>
+                    <strong>Pengaturan</strong>
+                </div>
+                <div class="content-tools">
+                    <button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Ubah tema">
+                        <svg class="icon-moon" width="15" height="15"><use href="#i-moon"/></svg>
+                        <svg class="icon-sun" width="15" height="15"><use href="#i-sun"/></svg>
+                    </button>
+                    <a class="icon-btn" href="/" aria-label="Dashboard" title="Dashboard">
+                        <svg width="15" height="15"><use href="#i-grid"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="page-head">
+                <div class="page-title">
+                    <span class="page-avatar">
+                        <svg width="20" height="20"><use href="#i-settings"/></svg>
+                    </span>
+                    <div>
+                        <h1 data-i18n="settings_title" data-test="Pengaturan">Settings</h1>
+                        <p data-i18n="settings_sub">Manage your account, appearance, profile avatar, and workspace preferences.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-grid">
+                <div class="settings-col">
+                    <!-- Profile Card -->
+                    <section class="settings-card" id="akun">
+                        <div class="card-head">
+                            <div>
+                                <h2 data-i18n="card_profile">Account Profile</h2>
+                                <p data-i18n="card_profile_sub">Account information connected to this workspace.</p>
+                            </div>
+                            <span class="badge-soft" data-i18n="badge_active">Active Account</span>
+                        </div>
+
+                        <div class="profile-head">
+                            <div class="profile-avatar user-avatar-container" id="settingsProfileAvatar">{{if .Avatar}}{{.Avatar}}{{else}}{{.Initial}}{{end}}</div>
+                            <div>
+                                <strong>{{.Nama}}</strong>
+                                <span>@{{.Username}}</span>
+                            </div>
+                        </div>
+
+                        <div class="info-list">
+                            <div class="info-row">
+                                <span data-i18n="info_fullname">Full name</span>
+                                <strong>{{.Nama}}</strong>
+                            </div>
+                            <div class="info-row">
+                                <span data-i18n="info_username">Username</span>
+                                <strong>{{.Username}}</strong>
+                            </div>
+                            <div class="info-row">
+                                <span data-i18n="info_email">Email</span>
+                                <strong>{{.Email}}</strong>
+                            </div>
+                            <div class="info-row">
+                                <span data-i18n="info_joined">Joined</span>
+                                <strong>{{.JoinedLabel}}</strong>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Profile Photo Avatar Builder Card -->
+                    <section class="settings-card" id="avatar-builder">
+                        <div class="card-head">
+                            <div>
+                                <h2 data-i18n="card_avatar">Profile Avatar</h2>
+                                <p data-i18n="card_avatar_sub">Customize your profile photo: gender, skin tone, shirt color, and accessories.</p>
+                            </div>
+                            <span class="badge-soft" data-i18n="badge_custom">Custom Avatar</span>
+                        </div>
+
+                        <div class="avatar-builder-card">
+                            <!-- Live Preview -->
+                            <div class="avatar-preview-section">
+                                <div class="avatar-preview-box" id="avatarLivePreview"></div>
+                                <div class="avatar-preview-info">
+                                    <h4 data-i18n="avatar_preview_title">Live Avatar Preview</h4>
+                                    <p data-i18n="avatar_preview_desc">This avatar will represent you in the dashboard, team members, and sidebar.</p>
+                                    <span class="badge-soft" id="avatarStatusBadge" style="display:none; color:var(--green);">✓ Saved</span>
+                                </div>
+                            </div>
+
+                            <!-- Customization Controls -->
+                            <div class="avatar-controls-grid">
+                                <!-- Gender / Model -->
+                                <div class="avatar-control-group">
+                                    <label data-i18n="avatar_gender">Gender / Character</label>
+                                    <div class="gender-toggle-group">
+                                        <button type="button" class="gender-btn active" data-avatar-gender="male">
+                                            <span>👨 Male</span>
+                                        </button>
+                                        <button type="button" class="gender-btn" data-avatar-gender="female">
+                                            <span>👩 Female</span>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Skin Tone -->
+                                <div class="avatar-control-group">
+                                    <label data-i18n="avatar_skin">Skin Tone (Warna Kulit)</label>
+                                    <div class="swatch-group" id="skinSwatches">
+                                        <button type="button" class="color-swatch active" style="background:#FFDFC4" data-skin="#FFDFC4" title="Light"></button>
+                                        <button type="button" class="color-swatch" style="background:#F0C8A0" data-skin="#F0C8A0" title="Warm Peach"></button>
+                                        <button type="button" class="color-swatch" style="background:#DDA876" data-skin="#DDA876" title="Olive / Tan"></button>
+                                        <button type="button" class="color-swatch" style="background:#B97C4B" data-skin="#B97C4B" title="Bronze"></button>
+                                        <button type="button" class="color-swatch" style="background:#7D4B2A" data-skin="#7D4B2A" title="Deep / Dark"></button>
+                                    </div>
+                                </div>
+
+                                <!-- Shirt Color -->
+                                <div class="avatar-control-group">
+                                    <label data-i18n="avatar_shirt">Shirt Color (Warna Baju)</label>
+                                    <div class="swatch-group" id="shirtSwatches">
+                                        <button type="button" class="color-swatch active" style="background:#2563EB" data-shirt="#2563EB" title="Blue"></button>
+                                        <button type="button" class="color-swatch" style="background:#059669" data-shirt="#059669" title="Emerald Green"></button>
+                                        <button type="button" class="color-swatch" style="background:#7C3AED" data-shirt="#7C3AED" title="Purple"></button>
+                                        <button type="button" class="color-swatch" style="background:#DC2626" data-shirt="#DC2626" title="Crimson Red"></button>
+                                        <button type="button" class="color-swatch" style="background:#1F2937" data-shirt="#1F2937" title="Midnight Black"></button>
+                                        <button type="button" class="color-swatch" style="background:#D97706" data-shirt="#D97706" title="Amber Orange"></button>
+                                        <button type="button" class="color-swatch" style="background:#E11D48" data-shirt="#E11D48" title="Rose Pink"></button>
+                                        <button type="button" class="color-swatch" style="background:#0891B2" data-shirt="#0891B2" title="Teal Cyan"></button>
+                                    </div>
+                                </div>
+
+                                <!-- Hair Color -->
+                                <div class="avatar-control-group">
+                                    <label data-i18n="avatar_hair">Hair Color (Warna Rambut)</label>
+                                    <div class="swatch-group" id="hairSwatches">
+                                        <button type="button" class="color-swatch active" style="background:#18181B" data-hair="#18181B" title="Black"></button>
+                                        <button type="button" class="color-swatch" style="background:#452613" data-hair="#452613" title="Dark Brown"></button>
+                                        <button type="button" class="color-swatch" style="background:#78350F" data-hair="#78350F" title="Chestnut"></button>
+                                        <button type="button" class="color-swatch" style="background:#D9A05B" data-hair="#D9A05B" title="Blonde"></button>
+                                        <button type="button" class="color-swatch" style="background:#B45309" data-hair="#B45309" title="Auburn / Ginger"></button>
+                                        <button type="button" class="color-swatch" style="background:#94A3B8" data-hair="#94A3B8" title="Silver Gray"></button>
+                                    </div>
+                                </div>
+
+                                <!-- Accessories / Glasses -->
+                                <div class="avatar-control-group">
+                                    <label data-i18n="avatar_glasses">Accessories / Glasses (Kacamata)</label>
+                                    <div class="select-group" id="glassesSelect">
+                                        <button type="button" class="avatar-select-btn active" data-glasses="none" data-i18n="acc_none">None</button>
+                                        <button type="button" class="avatar-select-btn" data-glasses="glasses" data-i18n="acc_glasses">👓 Glasses</button>
+                                        <button type="button" class="avatar-select-btn" data-glasses="sunglasses" data-i18n="acc_sunglasses">🕶 Sunglasses</button>
+                                    </div>
+                                </div>
+
+                                <!-- Background Color -->
+                                <div class="avatar-control-group">
+                                    <label data-i18n="avatar_bg">Background Color</label>
+                                    <div class="swatch-group" id="bgSwatches">
+                                        <button type="button" class="color-swatch active" style="background:#DBEAFE" data-bg="#DBEAFE" title="Blue Mist"></button>
+                                        <button type="button" class="color-swatch" style="background:#D1FAE5" data-bg="#D1FAE5" title="Mint Green"></button>
+                                        <button type="button" class="color-swatch" style="background:#EDE9FE" data-bg="#EDE9FE" title="Lavender"></button>
+                                        <button type="button" class="color-swatch" style="background:#FFEDD5" data-bg="#FFEDD5" title="Warm Peach"></button>
+                                        <button type="button" class="color-swatch" style="background:#E2E8F0" data-bg="#E2E8F0" title="Slate Gray"></button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Action Row -->
+                            <div class="avatar-actions-row">
+                                <button type="button" class="secondary-btn" id="randomizeAvatarBtn" data-i18n="btn_randomize">🎲 Randomize</button>
+                                <button type="button" class="primary-btn" id="saveAvatarBtn" data-i18n="btn_save_avatar">💾 Save Avatar</button>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                <div class="settings-col">
+                    <!-- Language Selection Card -->
+                    <section class="settings-card" id="bahasa">
+                        <div class="card-head">
+                            <div>
+                                <h2 data-i18n="card_language">Workspace Language / Bahasa</h2>
+                                <p data-i18n="card_language_sub">Choose your preferred workspace language (English is default).</p>
+                            </div>
+                            <span class="badge-soft" id="activeLangBadge">EN (Default)</span>
+                        </div>
+
+                        <div class="lang-grid">
+                            <label class="lang-option">
+                                <input type="radio" name="app_language" value="en" data-lang-option checked>
+                                <div class="lang-card">
+                                    <span class="lang-flag">🇬🇧</span>
+                                    <div>
+                                        <strong>English</strong>
+                                        <small>Default Language</small>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="lang-option">
+                                <input type="radio" name="app_language" value="id" data-lang-option>
+                                <div class="lang-card">
+                                    <span class="lang-flag">🇮🇩</span>
+                                    <div>
+                                        <strong>Bahasa Indonesia</strong>
+                                        <small>Indonesian</small>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="lang-option">
+                                <input type="radio" name="app_language" value="ru" data-lang-option>
+                                <div class="lang-card">
+                                    <span class="lang-flag">🇷🇺</span>
+                                    <div>
+                                        <strong>Русский</strong>
+                                        <small>Russian</small>
+                                    </div>
+                                </div>
+                            </label>
+
+                            <label class="lang-option">
+                                <input type="radio" name="app_language" value="zh" data-lang-option>
+                                <div class="lang-card">
+                                    <span class="lang-flag">🇨🇳</span>
+                                    <div>
+                                        <strong>简体中文</strong>
+                                        <small>Chinese</small>
+                                    </div>
+                                </div>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Theme Card -->
+                    <section class="settings-card" id="tampilan">
+                        <div class="card-head">
+                            <div>
+                                <h2 data-i18n="card_appearance">Appearance</h2>
+                                <p data-i18n="card_appearance_sub">Choose the theme that suits your eyes best.</p>
+                            </div>
+                        </div>
+
+                        <div class="theme-list" role="radiogroup" aria-label="Theme Selection">
+                            <label class="theme-option">
+                                <span class="theme-icon">
+                                    <svg width="16" height="16"><use href="#i-sun"/></svg>
+                                </span>
+                                <span>
+                                    <strong data-i18n="theme_light">Light</strong>
+                                    <small data-i18n="theme_light_sub">Bright interface with clean white background.</small>
+                                </span>
+                                <input type="radio" name="theme" value="light" data-theme-option>
+                            </label>
+
+                            <label class="theme-option">
+                                <span class="theme-icon">
+                                    <svg width="16" height="16"><use href="#i-moon"/></svg>
+                                </span>
+                                <span>
+                                    <strong data-i18n="theme_dark">Dark</strong>
+                                    <small data-i18n="theme_dark_sub">Comfortable for working in low light.</small>
+                                </span>
+                                <input type="radio" name="theme" value="dark" data-theme-option>
+                            </label>
+
+                            <label class="theme-option">
+                                <span class="theme-icon">
+                                    <svg width="16" height="16"><use href="#i-monitor"/></svg>
+                                </span>
+                                <span>
+                                    <strong data-i18n="theme_system">Follow system</strong>
+                                    <small data-i18n="theme_system_sub">Automatically matches your OS preference.</small>
+                                </span>
+                                <input type="radio" name="theme" value="system" data-theme-option>
+                            </label>
+                        </div>
+                    </section>
+
+                    <!-- Session & Security Card -->
+                    <section class="settings-card" id="sesi">
+                        <div class="card-head">
+                            <div>
+                                <h2 data-i18n="card_security">Session &amp; Security</h2>
+                                <p data-i18n="card_security_sub">Manage your account session on this device.</p>
+                            </div>
+                        </div>
+
+                        <div class="danger-zone">
+                            <div>
+                                <strong data-i18n="logout_title">Sign out of account</strong>
+                                <p data-i18n="logout_sub">End your active session. You will need to log back in to continue.</p>
+                            </div>
+                            <a class="btn btn-danger" href="/logout">
+                                <svg width="14" height="14"><use href="#i-logout"/></svg>
+                                <span data-i18n="nav_logout">Logout</span>
+                            </a>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <title>Delete Project - Workspace Kelompok 1</title>
+    <script>
+        (function () {
+            try {
+                var mode = localStorage.getItem("todo-theme") || "system";
+                var dark = mode === "dark" || (mode !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
+                var root = document.documentElement;
+                root.setAttribute("data-theme", dark ? "dark" : "light");
+                root.style.colorScheme = dark ? "dark" : "light";
+                if (localStorage.getItem("todo-sidebar") === "collapsed") {
+                    root.classList.add("sidebar-collapsed");
+                }
+            } catch (err) {}
+        })();
+    </script>
+    <link rel="stylesheet" href="/static/app.css">
+    <style>
+        .new-project-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            padding: 28px 32px;
+            margin-bottom: 30px;
+        }
+
+        .project-form-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 28px;
+        }
+
+        @media (max-width: 900px) {
+            .project-form-grid {
+                grid-template-columns: 1fr;
+            }
+            .new-project-card {
+                padding: 20px;
+            }
+        }
+
+        .delete-warning-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            background: var(--red-soft);
+            border: 1px solid var(--red);
+            border-radius: 12px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        .delete-warning-icon {
+            font-size: 26px;
+            line-height: 1;
+            flex-shrink: 0;
+        }
+
+        .delete-warning-content h3 {
+            color: var(--red);
+            font-size: 15px;
+            font-weight: 700;
+            margin: 0 0 6px;
+        }
+
+        .delete-warning-content p {
+            color: var(--text);
+            font-size: 13px;
+            line-height: 1.5;
+            margin: 0;
+            opacity: 0.9;
+        }
+
+        .preview-card {
+            background: var(--surface-soft);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .preview-field {
+            margin-bottom: 14px;
+        }
+
+        .preview-field:last-child {
+            margin-bottom: 0;
+        }
+
+        .preview-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .preview-value {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-footer-actions {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 14px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .btn-danger-confirm {
+            background: linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);
+            color: #FFFFFF;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 9px;
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(192, 57, 43, 0.35);
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn-danger-confirm:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(192, 57, 43, 0.45);
+        }
+
+        .btn-danger-confirm:active {
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <svg class="icon-sprite" aria-hidden="true" focusable="false" style="position:absolute;width:0;height:0;overflow:hidden">
+        <symbol id="i-grid" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></g></symbol>
+        <symbol id="i-list" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01" stroke-width="2.4"/></g></symbol>
+        <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+        <symbol id="i-search" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></g></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></g></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.5A8.5 8.5 0 0 1 9.5 3.5 8.5 8.5 0 1 0 20.5 14.5Z" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="m15 18-6-6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+        <symbol id="i-settings" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></g></symbol>
+        <symbol id="i-users" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></g></symbol>
+        <symbol id="i-doc" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></g></symbol>
+        <symbol id="i-calendar" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4M3 10h18"/></g></symbol>
+        <symbol id="i-mail" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></g></symbol>
+        <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    </svg>
+
+    <!-- Topbar matching Dashboard -->
+    <header class="topbar">
+        <button type="button" class="menu-btn" id="menuToggle" aria-label="Open menu">
+            <svg width="18" height="18"><use href="#i-menu"/></svg>
+        </button>
+
+        <a class="brand" href="/">
+            <span class="brand-mark" style="background:#27ae60;color:#fff;">V</span>
+            <span class="brand-name">Kelompok 1</span>
+        </a>
+
+        <div class="top-search" role="search">
+            <svg width="15" height="15"><use href="#i-search"/></svg>
+            <input type="search" placeholder="Quick Search..." aria-label="Quick search" data-i18n-placeholder="search_placeholder" data-quick-search>
+            <span class="kbd">⌘ K</span>
+        </div>
+
+        <div class="top-actions">
+            <select class="top-lang-select" id="headerLangSelect" data-lang-select aria-label="Change Language">
+                <option value="en">🇬🇧 EN</option>
+                <option value="id">🇮🇩 ID</option>
+                <option value="ru">🇷🇺 RU</option>
+                <option value="zh">🇨🇳 ZH</option>
+            </select>
+
+            <button type="button" class="top-icon theme-toggle" data-theme-toggle aria-label="Toggle theme">
+                <svg class="icon-moon" width="17" height="17"><use href="#i-moon"/></svg>
+                <svg class="icon-sun" width="17" height="17"><use href="#i-sun"/></svg>
+            </button>
+
+            <a class="top-icon" href="/settings" aria-label="Settings" title="Settings">
+                <svg width="17" height="17"><use href="#i-settings"/></svg>
+            </a>
+
+            <a class="pill-btn" href="/" style="background:#fff;color:#181412;border-radius:999px;">
+                <span>← Dashboard</span>
+            </a>
+
+            <div class="win-controls" aria-hidden="true">
+                <span class="wc wc-min"></span>
+                <span class="wc wc-max"></span>
+                <span class="wc wc-close"></span>
+            </div>
+        </div>
+    </header>
+
+    <div class="scrim" id="sidebarScrim"></div>
+
+    <div class="shell">
+        <!-- Sidebar matching Dashboard -->
+        <aside class="sidebar">
+            <div class="workspace">
+                <div class="ws-avatar user-avatar-container">{{if .Avatar}}{{.Avatar}}{{else}}{{.Initial}}{{end}}</div>
+                <div class="ws-info">
+                    <strong>{{if .Nama}}{{.Nama}}{{else}}Kelompok 1{{end}}</strong>
+                    <small>{{if .Email}}{{.Email}}{{else}}admin@example.com{{end}}</small>
+                </div>
+                <button type="button" class="collapse-btn" id="sidebarCollapse" aria-label="Collapse sidebar" aria-expanded="true">
+                    <svg width="14" height="14"><use href="#i-chevron-left"/></svg>
+                </button>
+            </div>
+
+            <nav aria-label="Main menu">
+                <p class="nav-label" data-i18n="main_menu">MAIN MENU</p>
+                <a class="nav-item" href="/">
+                    <svg><use href="#i-grid"/></svg>
+                    <span class="nav-text" data-i18n="nav_dashboard">Dashboard</span>
+                </a>
+                <a class="nav-item" href="/#project-overview">
+                    <svg><use href="#i-list"/></svg>
+                    <span class="nav-text" data-i18n="nav_my_tasks">My Tasks</span>
+                    <span class="nav-count">{{.TotalVisible}}</span>
+                </a>
+                <a class="nav-item" href="/todo/create">
+                    <svg><use href="#i-plus"/></svg>
+                    <span class="nav-text" data-i18n="btn_new_task">+ New Project</span>
+                </a>
+
+                <p class="nav-label" data-i18n="workspace_label">WORKSPACE</p>
+                <a class="nav-item" href="/inbox">
+                    <svg><use href="#i-mail"/></svg>
+                    <span class="nav-text" data-i18n="nav_inbox">Inbox</span>
+                    {{if gt .UnreadInboxCount 0}}<span class="nav-count" style="background:#e74c3c;color:#fff;">{{.UnreadInboxCount}}</span>{{end}}
+                </a>
+                <a class="nav-item" href="/documents">
+                    <svg><use href="#i-doc"/></svg>
+                    <span class="nav-text" data-i18n="nav_documents">Documents</span>
+                </a>
+                <a class="nav-item" href="/team">
+                    <svg><use href="#i-users"/></svg>
+                    <span class="nav-text" data-i18n="nav_team">Team Members</span>
+                </a>
+                <a class="nav-item" href="/calendar">
+                    <svg><use href="#i-calendar"/></svg>
+                    <span class="nav-text" data-i18n="nav_calendar">Calendar</span>
+                </a>
+
+                <p class="nav-label" data-i18n="project_status">PROJECT STATUS</p>
+                <a class="nav-item" href="/?status=belum">
+                    <span class="dot dot-amber"></span>
+                    <span class="nav-text" data-i18n="status_pending">Waiting</span>
+                    <span class="nav-count">{{.CountPending}}</span>
+                </a>
+                <a class="nav-item" href="/?status=sedang">
+                    <span class="dot dot-purple"></span>
+                    <span class="nav-text" data-i18n="status_ongoing">In Progress</span>
+                    <span class="nav-count">{{.CountOngoing}}</span>
+                </a>
+                <a class="nav-item" href="/?status=sudah">
+                    <span class="dot dot-green"></span>
+                    <span class="nav-text" data-i18n="status_completed">Completed</span>
+                    <span class="nav-count">{{.CountDone}}</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-card upgrade-card">
+                <div class="upgrade-icon">✦</div>
+                <strong data-i18n="sidebar_collab_title">Collaborative Workspace</strong>
+                <p data-i18n="sidebar_collab_desc">Invite team members and wait for approval (acc) via inbox.</p>
+                <a href="/team" class="widget-btn" style="display:inline-block;width:100%;text-decoration:none;margin-top:6px;box-sizing:border-box;" data-i18n="btn_invite_member">＋ Invite Member</a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content">
+            <div class="content-bar">
+                <div class="breadcrumb">
+                    <span class="crumb-arrows">‹　›</span>
+                    <a href="/" data-i18n="main_menu_breadcrumb">Main Menu</a>
+                    <span>/</span>
+                    <a href="/todo/detail?id={{.Todo.ID}}">Project Details</a>
+                    <span>/</span>
+                    <strong style="color:var(--red);">Delete Project</strong>
+                </div>
+
+                <div class="content-tools">
+                    <button type="button" class="icon-btn theme-toggle" data-theme-toggle aria-label="Toggle theme">
+                        <svg class="icon-moon" width="15" height="15"><use href="#i-moon"/></svg>
+                        <svg class="icon-sun" width="15" height="15"><use href="#i-sun"/></svg>
+                    </button>
+                    <a class="icon-btn" href="/settings" aria-label="Settings" title="Settings" data-i18n-title="nav_settings">
+                        <svg width="15" height="15"><use href="#i-settings"/></svg>
+                    </a>
+                </div>
+            </div>
+
+            <div class="page-head welcome-row">
+                <div class="page-title">
+                    <div class="ws-avatar user-avatar-container" style="width:44px;height:44px;border-radius:10px;font-size:18px;background:linear-gradient(135deg, #E74C3C 0%, #C0392B 100%);color:#fff;">🗑</div>
+                    <div>
+                        <h1>Delete Project Confirmation</h1>
+                        <p>Permanently remove this project and all associated tasks from your workspace.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Danger Card matching Dashboard / New Project aesthetics -->
+            <div class="new-project-card">
+                <!-- Warning Alert Banner -->
+                <div class="delete-warning-box">
+                    <div class="delete-warning-icon">⚠️</div>
+                    <div class="delete-warning-content">
+                        <h3>Action cannot be undone</h3>
+                        <p>Are you sure you want to permanently delete <strong>{{.Todo.Title}}</strong>? Once deleted, all milestones, documents, and collaborator connections for this project will be removed immediately.</p>
+                    </div>
+                </div>
+
+                <div class="project-form-grid">
+                    <!-- Left Column: Project Overview -->
+                    <div>
+                        <div class="preview-card">
+                            <div class="preview-field">
+                                <div class="preview-label">Project Name</div>
+                                <div class="preview-value" style="font-size:16px;font-weight:700;">{{.Todo.Title}}</div>
+                            </div>
+
+                            <div class="preview-field">
+                                <div class="preview-label">Description</div>
+                                <div class="preview-value" style="color:var(--text-soft);line-height:1.5;">
+                                    {{if .Todo.Description}}{{.Todo.Description}}{{else}}<em>No description provided.</em>{{end}}
+                                </div>
+                            </div>
+
+                            <div class="preview-field">
+                                <div class="preview-label">Deadline (WIB)</div>
+                                <div class="preview-value">{{.Todo.Deadline}}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Project Meta -->
+                    <div>
+                        <div class="preview-card">
+                            <div class="preview-field">
+                                <div class="preview-label">Priority Level</div>
+                                <div class="preview-value">
+                                    {{if or (eq .Todo.Priority "high") (eq .Todo.Priority "tinggi")}}
+                                        <span style="color:#C0392B;font-weight:700;">🔴 High Priority</span>
+                                    {{else if or (eq .Todo.Priority "low") (eq .Todo.Priority "rendah")}}
+                                        <span style="color:#27AE60;font-weight:700;">🟢 Low Priority</span>
+                                    {{else}}
+                                        <span style="color:#E67E22;font-weight:700;">🟡 Medium Priority</span>
+                                    {{end}}
+                                </div>
+                            </div>
+
+                            <div class="preview-field">
+                                <div class="preview-label">Current Status</div>
+                                <div class="preview-value">
+                                    {{if eq .Todo.Status "sudah"}}
+                                        <span style="color:#27AE60;font-weight:700;">Completed (Sudah)</span>
+                                    {{else if eq .Todo.Status "sedang"}}
+                                        <span style="color:#8E44AD;font-weight:700;">In Progress (Sedang)</span>
+                                    {{else}}
+                                        <span style="color:#E67E22;font-weight:700;">Waiting (Belum)</span>
+                                    {{end}}
+                                </div>
+                            </div>
+
+                            <div class="preview-field">
+                                <div class="preview-label">Associated Milestones</div>
+                                <div class="preview-value">{{len .Todo.SubTodos}} sub-task items</div>
+                            </div>
+
+                            <div class="preview-field">
+                                <div class="preview-label">Attached Document</div>
+                                <div class="preview-value">{{if .Todo.Document}}📄 {{.Todo.Document}}{{else}}None{{end}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form to trigger POST delete -->
+                <form method="POST" action="/todo/delete?id={{.Todo.ID}}" onsubmit="return confirm('Are you sure you want to delete this project?');">
+                    <div class="form-footer-actions">
+                        <a class="btn btn-ghost" href="/todo/detail?id={{.Todo.ID}}">← Cancel / Keep Project</a>
+                        <button type="submit" class="btn-danger-confirm">
+                            🗑 Permanently Delete Project
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>
